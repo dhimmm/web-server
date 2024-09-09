@@ -1,0 +1,25 @@
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - nginx_cache:/var/cache/nginx
+    depends_on:
+      - node-app
+    platform: linux/amd64
+
+  node-app:
+    build: ./node-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./node-app:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  nginx_cache:
+    driver: local
